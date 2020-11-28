@@ -1,41 +1,50 @@
-var createError = require('http-errors');
 var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
 var app = express();
+var cors=require('cors');
+var setUpPassport=require('./config/setuppassport');
+var passport=require('passport');
+var mongoose=require('mongoose');
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+var mainRouter = require('./routes/main');
+var loginRouter = require('./routes/sign/login');
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+const bodyParser=require('body-parser');
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', true);
+mongoose.set('useCreateIndex', true);
+mongoose.set('useUnifiedTopology', true);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+mongoose.Promise=global.Promise;
+mongoose.connect("mongodb://localhost:27017/habits", {
+  useNewUrlParser:true, useCreateIndex:true, useUnifiedTopology:true
 });
+const db=mongoose.connection;
+db.once("open", ()=>{
+    console.log("Connected to DB");
+})
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use(cors());
+app.use(express.json({
+  type:['application/json', 'text/plain']
+}))
+app.use(bodyParser.urlencoded({
+  extended:true
+}))
+app.use(bodyParser.json());
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(function(req,res,next){
+  res.locals.isAuthenticated=req.isAuthenticated();
+  res.locals.currentUser=req.user;
+  next();
+})
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+app.use('/main', mainRouter);
+app.use('/login', loginRouter);
 
-module.exports = app;
+const port = 8000;
+
+app.listen(port, () => console.log(`listening on port ${port}!`));
+
+module.exports=app;
