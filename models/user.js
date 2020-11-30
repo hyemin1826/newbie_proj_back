@@ -30,30 +30,6 @@ userSchema.methods.checkPassword=function(input){
         console.log("비번 틀림");
         return false;    }
 };
-/*
-userSchema.pre("save", function(done){
-    console.log("models");
-    var user=this;
-    if (! user.isModified("pw")){
-        return done(); //async 함수 끝났다고 알려주는 callback 함수
-    }
-    bcrypt.genSalt(SALT_FACTOR, (err, salt)=>{
-        if (err){
-            return done(err);
-        }
-        bcrypt.hash(user.pw, salt, noop, (err, hashedpw)=>{
-            if (err) return done(err);
-            user.pw=hashedpw;
-            done();
-        });
-    });
-});
 
-userSchema.methods.checkPassword= (input, done)=>{
-    bcrypt.compare(input, this.pw, (err, right)=>{
-        done(err, right);
-    });
-};
-*/
 var User=mongoose.model("User", userSchema);
 module.exports=mongoose.model("User", userSchema);

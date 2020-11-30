@@ -36,16 +36,7 @@ passport.use("login", new LocalStrategy({
             else {
                 done(null, false, {message:'Incorrect Passowrd.'});
             }
-        /*
-        var valid=user.checkPassword(user_pw){
-            console.log("i wanna check my password is correct");
-            if(err){return done(err);}
-            if(correct){
-                return done(null,user);
-            }
-            return done(null,false,{message:"Invalid password."});
-        });
-        */ 
+       
     });
 }));
 
