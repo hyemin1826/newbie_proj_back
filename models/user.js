@@ -6,7 +6,7 @@ var userSchema=mongoose.Schema({
     //name:{type:String},
     username: {type:String, required:true, unique:true},
     password: {type:String, required:true},
-    habit: {type:Array, required:true}
+    habit: {type:Object, required:true}
 });
 
 var noop=function(){};
@@ -21,14 +21,13 @@ userSchema.pre("save", function(done){
 })
 
 userSchema.methods.checkPassword=function(input){
-    console.log("checkpassword");
-    //console.log(this);
-    //console.log("this.password =="+this.password);
+    console.log("check_password");
     if (input==this.password){
         console.log("correct password!");
         return true;
     }
     else{
+        console.log("비번 틀림");
         return false;    }
 };
 /*

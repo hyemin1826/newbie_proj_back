@@ -19,7 +19,7 @@ passport.use("login", new LocalStrategy({
     passReqToCallback:true
     },
     function(req, username,password,done){
-        console.log("in setduppassport.js");
+        console.log("in setduppassport, pw: "+password);
         User.findOne({username:username}, function(err,user){
             if(err){
                 return done(err);
@@ -31,7 +31,6 @@ passport.use("login", new LocalStrategy({
             var valid=user.checkPassword(password);
             console.log("login success? : "+valid);
             if (valid){
-                
                 done(null, user);
             }
             else {

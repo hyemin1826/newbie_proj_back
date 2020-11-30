@@ -1,7 +1,7 @@
 var express=require('express');
 var passport=require("passport");
 var router=express.Router();
-var User=require("/home/juhyemin/newbie_proj/newbie_proj_back/models/user"); //user schema
+var User=require("../../models/user"); //user schema
 var app=express();
 const bodyParser=require('body-parser');
 
@@ -14,10 +14,7 @@ router.get('/', (req, res)=>{
 
 router.post("/", (req,res, next)=>{
     console.log(req.body);
-    //console.log("This is for login!");
-    //var sess=req.session;
-    //sess.username=req.body.username;
-    
+
     var errors={};
     var valid=true;
 
@@ -32,29 +29,27 @@ router.post("/", (req,res, next)=>{
         valid=false;
     }
 
-    if (valid){
-        next(); //for authentication
+    if (!valid){
+       return res.send(JSON.parse(JSON.stringify({})));
     }
-    else{
-        console.log("fail to log");
-        //req.flash('errors', errors);
-        //res.redirect('/login');
-        res.send(JSON.parse(JSON.stringify({})));
-    }
-},
-passport.authenticate('login', function(err, user, info){
-    if (err) return next(err);
-    if (user){
-        //var json=JSON.parse(JSON.stringify(user));
-        var login_info={'username':user.username, 'isLogin':1, 'habit':user.habit};
-        var json=JSON.parse(JSON.stringify(login_info));
-        
-        req.login(user, function(err){
-            if (err) return next(err);
-            return res.send(json);
-        });
-    } else {res.send([]);}
-}));
+
+   //조건 넘긴 친구
+   passport.authenticate('login', function(err, user, info){
+    //console.log("in logig.js");
+        if (err) return next(err);
+        if (user){
+            console.log(user.habit);
+            var login_info={'username':user.username, 'isLogin':1, 'habit':user.habit};
+            var json=JSON.parse(JSON.stringify(login_info));
+            //console.log(json);
+
+            req.logIn(user, function(err){
+                if (err) return next(err);
+                return res.send(json);
+            });
+        } else {res.send([]);}
+    })(req,res,next);
+});
 
 router.get('/logout', (req,res)=>{
     //session destroy 추가

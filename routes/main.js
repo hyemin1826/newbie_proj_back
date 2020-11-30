@@ -1,6 +1,6 @@
 var express=require('express');
 var router=express.Router();
-var User=require("/home/juhyemin/newbie_proj/newbie_proj_back/models/user"); //user schema
+var User=require("../models/user"); //user schema
 
 router.get("/", (req, res, next)=>{
     console.log("this is main window");

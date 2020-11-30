@@ -7,6 +7,8 @@ var mongoose=require('mongoose');
 
 var mainRouter = require('./routes/main');
 var loginRouter = require('./routes/sign/login');
+var registerRouter = require('./routes/sign/register');
+var boardRouter = require('./routes/board');
 
 const bodyParser=require('body-parser');
 
@@ -42,6 +44,8 @@ app.use(function(req,res,next){
 
 app.use('/main', mainRouter);
 app.use('/login', loginRouter);
+app.use('/register', registerRouter);
+app.use('/board', boardRouter);
 
 const port = 8000;
 
